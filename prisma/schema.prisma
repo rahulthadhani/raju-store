@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String?
+  phone           String?
+  role            Role      @default(CUSTOMER)
+  importedFromCsv Boolean   @default(false)
+  inviteSent      Boolean   @default(false)
+  addresses       Address[]
+  orders          Order[]
+  reviews         Review[]
+  cart            Cart?
+  createdAt       DateTime  @default(now())
+}
+
+model Product {
+  id             String         @id @default(cuid())
+  sku            String         @unique
+  title          String
+  slug           String         @unique
+  description    String
+  price          Decimal
+  compareAt      Decimal?
+  categoryId     String
+  category       Category       @relation(fields: [categoryId], references: [id])
+  variants       Variant[]
+  images         String[]
+  tags           String[]
+  isPublished    Boolean        @default(false)
+  inventoryLogs  InventoryLog[]
+  reviews        Review[]
+  createdAt      DateTime       @default(now())
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children Category[] @relation("SubCategories")
+  products Product[]
+}
+
+model Variant {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  sku       String   @unique
+  name      String
+  value     String
+  price     Decimal?
+  stock     Int      @default(0)
+}
+
+model InventoryLog {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  delta     Int
+  reason    String
+  orderId   String?
+  createdAt DateTime @default(now())
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId String
+  variantId String?
+  quantity  Int
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  status    OrderStatus @default(PENDING)
+  total     Decimal
+  stripeId  String?
+  address   Json
+  channel   Channel     @default(ONLINE)
+  notes     String?
+  createdAt DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  title     String
+  price     Decimal
+  quantity  Int
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Int
+  body      String?
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  line1     String
+  line2     String?
+  city      String
+  state     String
+  zip       String
+  country   String
+  isDefault Boolean @default(false)
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum Channel {
+  ONLINE
+  IN_STORE
+}
