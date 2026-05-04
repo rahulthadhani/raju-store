@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { notFound } from "next/navigation"
+import AddToCartButton from "@/components/AddToCartButton"
 
 const prisma = new PrismaClient()
 
@@ -29,15 +30,8 @@ export default async function ProductPage({
                     <p style={{ fontSize: 12, color: "#999", marginBottom: 8 }}>{product.category.name}</p>
                     <h1 style={{ fontSize: 24, marginBottom: 12 }}>{product.title}</h1>
                     <p style={{ fontSize: 22, fontWeight: 600, marginBottom: 16 }}>${Number(product.price).toFixed(2)}</p>
-                    {product.compareAt && (
-                        <p style={{ textDecoration: "line-through", color: "#999", marginBottom: 8 }}>
-                            ${Number(product.compareAt).toFixed(2)}
-                        </p>
-                    )}
                     <p style={{ color: "#555", lineHeight: 1.6, marginBottom: 24 }}>{product.description}</p>
-                    <button style={{ width: "100%", padding: "14px", background: "#000", color: "#fff", border: "none", borderRadius: 8, fontSize: 16, cursor: "pointer" }}>
-                        Add to Cart
-                    </button>
+                    <AddToCartButton product={{ id: product.id, title: product.title, price: Number(product.price), slug: product.slug }} />
                 </div>
             </div>
         </main>
