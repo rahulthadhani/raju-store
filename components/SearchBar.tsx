@@ -8,7 +8,9 @@ export default function SearchBar() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        if (query.trim()) router.push(`/products?q=${query}`)
+        if (query.trim()) {
+            router.push(`/products?q=${encodeURIComponent(query)}`)
+        }
     }
 
     return (

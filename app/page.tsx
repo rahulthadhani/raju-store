@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import Link from "next/link"
+import SearchBar from "@/components/SearchBar"
 
 const prisma = new PrismaClient()
 
@@ -11,7 +12,10 @@ export default async function HomePage() {
 
   return (
     <main style={{ maxWidth: 1200, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1 style={{ marginBottom: "2rem" }}>Welcome to Raju Store</h1>
+      <h1 style={{ marginBottom: "1.5rem" }}>Welcome to Raju Store</h1>
+      <div style={{ marginBottom: "2rem" }}>
+        <SearchBar />
+      </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.5rem" }}>
         {products.map(product => (
           <Link key={product.id} href={`/products/${product.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
