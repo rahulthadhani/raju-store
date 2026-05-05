@@ -1,9 +1,17 @@
+"use client"
 import Link from "next/link"
-import { auth } from "@/lib/auth"
+import { useSession } from "next-auth/react"
 
-export default async function Navbar() {
-    const session = await auth()
+export default function Navbar() {
+    const { data: session, status } = useSession()
     const user = session?.user as any
+
+    if (status === "loading") return (
+        <nav style={{ background: "#fff", borderBottom: "1px solid #eee", padding: "0 2rem", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
+            <Link href="/" style={{ fontSize: 18, fontWeight: 700, textDecoration: "none", color: "#000" }}>Raju Store</Link>
+            <div style={{ fontSize: 14, color: "#999" }}>Loading...</div>
+        </nav>
+    )
 
     return (
         <nav style={{ background: "#fff", borderBottom: "1px solid #eee", padding: "0 2rem", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
