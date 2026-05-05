@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/db"
 
 export default async function AdminDashboard() {
     const [totalOrders, totalCustomers, totalProducts, recentOrders] = await Promise.all([

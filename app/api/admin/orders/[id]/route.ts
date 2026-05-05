@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/db"
 
 export async function POST(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params
-    const formData = await req.formData()
-    const status = formData.get("status") as string
+    const { status } = await req.json()
 
     const order = await prisma.order.update({
         where: { id },
         data: { status: status as any },
     })
 
-    return NextResponse.redirect(new URL(`/admin/orders/${id}`, req.url))
+    return NextResponse.json(order)
 }

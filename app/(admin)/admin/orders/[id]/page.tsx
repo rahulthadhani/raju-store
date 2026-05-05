@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/db"
 import { notFound } from "next/navigation"
-
-const prisma = new PrismaClient()
+import UpdateOrderStatus from "@/components/UpdateOrderStatus"
 
 export default async function OrderDetailPage({
     params,
@@ -32,7 +31,7 @@ export default async function OrderDetailPage({
                 {order.items.map(item => (
                     <div key={item.id} style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f5f5f5", padding: "8px 0" }}>
                         <span style={{ fontSize: 14 }}>{item.title} x{item.quantity}</span>
-                        <span style={{ fontSize: 14, fontWeight: 500 }}>${Number(item.price * item.quantity).toFixed(2)}</span>
+                        <span style={{ fontSize: 14, fontWeight: 500 }}>${(Number(item.price) * item.quantity).toFixed(2)}</span>
                     </div>
                 ))}
                 <div style={{ textAlign: "right", marginTop: "1rem" }}>
@@ -45,23 +44,5 @@ export default async function OrderDetailPage({
                 <UpdateOrderStatus orderId={order.id} currentStatus={order.status} />
             </div>
         </div>
-    )
-}
-
-function UpdateOrderStatus({ orderId, currentStatus }: { orderId: string, currentStatus: string }) {
-    return (
-        <form action={`/api/admin/orders/${orderId}`} method="POST">
-            <select name="status" defaultValue={currentStatus} style={{ padding: "8px 12px", border: "1px solid #ddd", borderRadius: 6, fontSize: 14, marginRight: 12 }}>
-                <option value="PENDING">Pending</option>
-                <option value="PAID">Paid</option>
-                <option value="PROCESSING">Processing</option>
-                <option value="SHIPPED">Shipped</option>
-                <option value="DELIVERED">Delivered</option>
-                <option value="CANCELLED">Cancelled</option>
-            </select>
-            <button type="submit" style={{ padding: "8px 16px", background: "#000", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}>
-                Update
-            </button>
-        </form>
     )
 }
