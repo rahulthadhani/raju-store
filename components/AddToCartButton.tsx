@@ -1,29 +1,26 @@
 "use client"
 import { addToCart } from "@/lib/cartStore"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export default function AddToCartButton({
     product,
 }: {
     product: { id: string; title: string; price: number; slug: string }
 }) {
+    const [added, setAdded] = useState(false)
+
     function handleAdd() {
-        addToCart({
-            id: product.id,
-            title: product.title,
-            price: Number(product.price),
-            quantity: 1,
-            slug: product.slug,
-        })
-        alert("Added to cart!")
+        addToCart({ id: product.id, title: product.title, price: product.price, quantity: 1, slug: product.slug })
+        setAdded(true)
+        setTimeout(() => setAdded(false), 2000)
     }
 
     return (
         <button
             onClick={handleAdd}
-            style={{ width: "100%", padding: "14px", background: "#000", color: "#fff", border: "none", borderRadius: 8, fontSize: 16, cursor: "pointer" }}
+            style={{ width: "100%", padding: "14px", background: added ? "#1e7e34" : "var(--red)", color: "white", border: "none", borderRadius: 8, fontSize: 15, fontWeight: 500, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "background .2s" }}
         >
-            Add to Cart
+            {added ? "✓ Added to Cart" : "Add to Cart"}
         </button>
     )
 }
