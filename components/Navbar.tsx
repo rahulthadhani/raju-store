@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import SignOutButton from "@/components/SignOutButton"
 
 export default function Navbar() {
     const { data: session, status } = useSession()
@@ -28,7 +29,7 @@ export default function Navbar() {
                         {user?.role === "ADMIN" && (
                             <Link href="/admin" style={{ fontSize: 14, textDecoration: "none", color: "#fff", background: "#000", padding: "6px 14px", borderRadius: 6 }}>Admin</Link>
                         )}
-                        <Link href="/api/auth/signout" style={{ fontSize: 14, textDecoration: "none", color: "#555", padding: "6px 12px" }}>Sign out</Link>
+                        <SignOutButton />
                     </>
                 ) : (
                     <>
