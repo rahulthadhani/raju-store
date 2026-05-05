@@ -37,7 +37,7 @@ export default async function OrderConfirmationPage({
                                 stripeId: session_id,
                                 status: "PAID",
                                 total: (stripeSession.amount_total || 0) / 100,
-                                address: stripeSession.customer_details || {},
+                                address: (stripeSession.customer_details as any) || {},
                                 channel: "ONLINE",
                                 items: {
                                     create: items.map((item: any) => ({
